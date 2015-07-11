@@ -11,27 +11,33 @@ int main(int argc, char** argv)
 	return(0);
     }
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-
-    if(SDL_CreateWindowAndRenderer(512, 256, 0,
-				   &window, &renderer) == -1)
-    {
-	// TODO(hugo): Error in creation
-    }
-
-    SDL_SetWindowTitle(window, "BRK");
-
-    SDL_Surface* background = SDL_CreateRGBSurface(0, 512, 256,
-						   32, 0, 0, 0, 0);
-
-
+    SDL_Window* window = SDL_CreateWindow("BRK",
+					  SDL_WINDOWPOS_CENTERED,
+					  SDL_WINDOWPOS_CENTERED,
+					  500, 546, 0);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);;
+    SDL_Surface* background = SDL_LoadBMP("../data/duck.bmp");
+    
+    SDL_RenderClear(renderer);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, background);
     if(texture)
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
-		   
-    SDL_Delay(2000);
+
+    bool gameContinue = true;
+    
+    while(gameContinue)
+	
+    {
+	SDL_Event event;
+	while(SDL_PollEvent(&event))
+	{
+	    if(event.type == SDL_QUIT)
+	    {
+		gameContinue = false;
+	    }
+	}
+    }
     
     SDL_FreeSurface(background);
     SDL_DestroyTexture(texture);
