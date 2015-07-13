@@ -4,8 +4,8 @@
 
 /*
   TODO(hugo):
-  - Smooth the speed of the paddle
-  - Detection collision for the paddle (see that it does not get away from the screen)
+  - Enforcing the frame rate (decide which frame rate to target)
+  - Smooth the collision detection (use float for positioning ?)
   - Add a ball to play around with
   - Support Gamepad
  */
@@ -39,31 +39,34 @@ int main(int argc, char** argv)
     while(GameContinue)	
     {
 	SDL_Event Event;
+	const Uint8* KeyboardState = SDL_GetKeyboardState(0);
 	while(SDL_PollEvent(&Event))
 	{
 	    if(Event.type == SDL_QUIT)
 	    {
 		GameContinue = false;
 	    }
-	    if(Event.type == SDL_KEYDOWN)
-	    {
-		if(Event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-		{
-		    if(Paddle.x - 4 >= 0)
-			Paddle.x -= 4;
-		}
-		if(Event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-		{
-		    if(Paddle.x + Paddle.w + 4 <= WindowWidth)
-			Paddle.x += 4;
-		}
-	    }
 	}
+
+	// NOTE(hugo): Keyboard events handling
+	if(KeyboardState[SDL_SCANCODE_RIGHT])
+	{
+	    if(Paddle.x + Paddle.w + 1 <= WindowWidth)
+		Paddle.x += 1;	    
+	}
+	if(KeyboardState[SDL_SCANCODE_LEFT])
+	{
+	    if(Paddle.x - 1 >= 0)
+		Paddle.x -= 1;	    
+	}
+
+	
 	SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
 	SDL_RenderClear(Renderer);	
 	SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
 	SDL_RenderFillRect(Renderer, &Paddle);
 	SDL_RenderPresent(Renderer);
+	
     }
     
     SDL_DestroyRenderer(Renderer);
