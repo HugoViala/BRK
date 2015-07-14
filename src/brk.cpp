@@ -19,6 +19,9 @@ int main(int argc, char** argv)
 	return(0);
     }
 
+    const float FRAME_PER_SECOND = 30.0f;
+    const float MS_PER_FRAME = 1000.0f / FRAME_PER_SECOND;
+    
     int WindowWidth = 500;
     int WindowHeight = 546;
     SDL_Window* Window = SDL_CreateWindow("BRK",
@@ -34,9 +37,13 @@ int main(int argc, char** argv)
     Paddle.w = 100;
     Paddle.h = 25;
     
-    bool GameContinue = true;
+    bool Running = true;
+
+    Uint64 TimeCount = 0;
+    Uint64 FrameCount = 0;
     
-    while(GameContinue)	
+    Uint32 LastFrameTime = SDL_GetTicks();
+    while(Running)	
     {
 	SDL_Event Event;
 	const Uint8* KeyboardState = SDL_GetKeyboardState(0);
@@ -44,7 +51,7 @@ int main(int argc, char** argv)
 	{
 	    if(Event.type == SDL_QUIT)
 	    {
-		GameContinue = false;
+		Running = false;
 	    }
 	}
 
@@ -52,12 +59,12 @@ int main(int argc, char** argv)
 	if(KeyboardState[SDL_SCANCODE_RIGHT])
 	{
 	    if(Paddle.x + Paddle.w + 1 <= WindowWidth)
-		Paddle.x += 1;	    
+		Paddle.x += 5;	    
 	}
 	if(KeyboardState[SDL_SCANCODE_LEFT])
 	{
 	    if(Paddle.x - 1 >= 0)
-		Paddle.x -= 1;	    
+		Paddle.x -= 5;	    
 	}
 
 	
@@ -66,9 +73,16 @@ int main(int argc, char** argv)
 	SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
 	SDL_RenderFillRect(Renderer, &Paddle);
 	SDL_RenderPresent(Renderer);
-	
+
+	Uint32 CurrentFrameTime = SDL_GetTicks();
+
+	if(CurrentFrameTime - LastFrameTime < MS_PER_FRAME)
+	{
+	    SDL_Delay(MS_PER_FRAME - CurrentFrameTime + LastFrameTime);
+	}
+	LastFrameTime = CurrentFrameTime;
     }
-    
+
     SDL_DestroyRenderer(Renderer);
     SDL_DestroyWindow(Window);
     SDL_Quit();
