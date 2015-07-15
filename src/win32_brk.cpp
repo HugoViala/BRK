@@ -1,8 +1,10 @@
+#include "brk.h"
 #include "win32_brk.h"
 
 /*
   TODO(hugo):
-  - Enforcing the frame rate (decide which frame rate to target)
+  - Cleaning up batch file
+  - Creating Debug Precompile instructions
   - Smooth the collision detection (use float for positioning ?)
   - Add a ball to play around with
   - Support Gamepad
@@ -44,7 +46,8 @@ int main(int argc, char** argv)
 
     const real32 FRAME_PER_SECOND = 30.0f;
     const real32 MS_PER_FRAME = 1000.0f / FRAME_PER_SECOND;
-    
+
+    // NOTE(hugo): Window and Renderer creation
     int WindowWidth = 500;
     int WindowHeight = 546;
     SDL_Window* Window = SDL_CreateWindow("BRK",
@@ -59,12 +62,22 @@ int main(int argc, char** argv)
     Paddle.y = 450;
     Paddle.w = 100;
     Paddle.h = 25;
-    
+
     bool Running = true;
 
+    
+    
+    
     LARGE_INTEGER LastFrameTime = Win32GetWallClock();
     while(Running)	
     {
+	// TODO(hugo): Should we create a game_input each frame ?
+	game_input Input = {};
+	Input.MoveLeft = false;
+	Input.MoveRight = false;
+	Input.ActionUp = false;
+
+	
 	SDL_Event Event;
 	const Uint8* KeyboardState = SDL_GetKeyboardState(0);
 	while(SDL_PollEvent(&Event))
@@ -78,22 +91,22 @@ int main(int argc, char** argv)
 	// NOTE(hugo): Keyboard events handling
 	if(KeyboardState[SDL_SCANCODE_RIGHT])
 	{
-	    if(Paddle.x + Paddle.w + 1 <= WindowWidth)
-		Paddle.x += 5;	    
+	    Input.MoveRight = true;
 	}
 	if(KeyboardState[SDL_SCANCODE_LEFT])
 	{
-	    if(Paddle.x - 1 >= 0)
-		Paddle.x -= 5;	    
+	    Input.MoveLeft = true;
 	}
 
-	
-	SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
-	SDL_RenderClear(Renderer);	
-	SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
-	SDL_RenderFillRect(Renderer, &Paddle);
-	SDL_RenderPresent(Renderer);
 
+	GameUpdateAndRender(Renderer, &Input, &Paddle);
+	
+	// -------------------------------------
+	//
+	// NOTE(hugo): Frame Rate Enforcing part
+	//
+	// -------------------------------------
+	
 	LARGE_INTEGER CurrentFrameTime = Win32GetWallClock();
 	real32 WorkSecondsElapsed = Win32GetSecondsElapsed(LastFrameTime, CurrentFrameTime);
 
@@ -115,6 +128,7 @@ int main(int argc, char** argv)
 	}
 	real32 MSElapsedForFrame = 1000.0f * Win32GetSecondsElapsed(LastFrameTime,
 								    Win32GetWallClock()); 
+	// NOTE(hugo): Debug Log for Frame Rate
 	SDL_Log("%f", MSElapsedForFrame);
 	LastFrameTime = Win32GetWallClock();
     }
