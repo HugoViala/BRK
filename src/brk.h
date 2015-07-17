@@ -34,7 +34,32 @@ struct game_input
     bool32 ActionUp;
 };
 
+
+// NOTE(hugo): This represent a point in the math
+// referentiel (bottom-left is (0,0))
+struct game_point
+{
+    real32 X;
+    real32 Y;
+};
+
+struct game_paddle
+{
+    game_point BottomLeftPos;
+    real32 Width;
+    real32 Height;
+};
+
+struct game_state
+{
+    // TODO(hugo): Should I make this a pointer ?
+    game_paddle Paddle;
+
+    int Width;
+    int Height;
+};
+
 void
-GameUpdateAndRender(SDL_Renderer* Renderer, game_input* Input, SDL_Rect* Paddle);
+GameUpdateAndRender(SDL_Renderer* Renderer, game_input* Input, game_state* GameState);
 
 #endif

@@ -57,15 +57,17 @@ int main(int argc, char** argv)
     SDL_Renderer* Renderer = SDL_CreateRenderer(Window, -1,
 						SDL_RENDERER_ACCELERATED);
 
-    SDL_Rect Paddle;
-    Paddle.x = 50;
-    Paddle.y = 450;
-    Paddle.w = 100;
-    Paddle.h = 25;
-
     bool Running = true;
-
-    
+    game_state GameState = {};
+    GameState.Width = WindowWidth;
+    GameState.Height = WindowHeight;
+    game_paddle Paddle = {};
+    Paddle.Width = 100;
+    Paddle.Height = 25;
+    Paddle.BottomLeftPos = {};
+    Paddle.BottomLeftPos.X = 160;
+    Paddle.BottomLeftPos.Y = 60;
+    GameState.Paddle = Paddle;
     
     
     LARGE_INTEGER LastFrameTime = Win32GetWallClock();
@@ -99,13 +101,15 @@ int main(int argc, char** argv)
 	}
 
 
-	GameUpdateAndRender(Renderer, &Input, &Paddle);
+	GameUpdateAndRender(Renderer, &Input, &GameState);
 	
 	// -------------------------------------
 	//
 	// NOTE(hugo): Frame Rate Enforcing part
 	//
 	// -------------------------------------
+
+	SDL_RenderPresent(Renderer);
 	
 	LARGE_INTEGER CurrentFrameTime = Win32GetWallClock();
 	real32 WorkSecondsElapsed = Win32GetSecondsElapsed(LastFrameTime, CurrentFrameTime);
@@ -128,8 +132,10 @@ int main(int argc, char** argv)
 	}
 	real32 MSElapsedForFrame = 1000.0f * Win32GetSecondsElapsed(LastFrameTime,
 								    Win32GetWallClock()); 
+#if 0
 	// NOTE(hugo): Debug Log for Frame Rate
 	SDL_Log("%f", MSElapsedForFrame);
+#endif
 	LastFrameTime = Win32GetWallClock();
     }
 
