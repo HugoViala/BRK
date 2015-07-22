@@ -1,6 +1,7 @@
 #include "brk.h"
 
-
+// TODO(hugo): Simplify this function taking my own
+// canonical rectangle
 // NOTE(hugo): This function draws a rectangle in
 // math canonical coordinates
 void
@@ -15,7 +16,7 @@ DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h)
 
     SDL_Rect DrawingRect = {};
     DrawingRect.x = x;
-    DrawingRect.y = WindowHeight - y;
+    DrawingRect.y = WindowHeight - y - h;
     DrawingRect.w = w;
     DrawingRect.h = h;
 
@@ -69,16 +70,24 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
        IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
     {
 	GameState->Paddle.BottomLeftPos = NewPaddlePosBottomLeft;
-	SDL_Log("%f", NewPaddlePosBottomLeft.X);
+	GameState->Ball.Pos.X = GameState->Paddle.BottomLeftPos.X + (GameState->Paddle.Width/2.0f);
     }
 
     // NOTE(hugo): Rendering
     SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
     SDL_RenderClear(Renderer);
     SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
+
+    // TODO(hugo): Simplify
     DrawRectangle(Renderer,
 		  (int) GameState->Paddle.BottomLeftPos.X,
 		  (int) GameState->Paddle.BottomLeftPos.Y,
 		  (int) GameState->Paddle.Width,
 		  (int) GameState->Paddle.Height);
+
+    DrawRectangle(Renderer,
+		  (int) GameState->Ball.Pos.X,
+		  (int) GameState->Ball.Pos.Y,
+		  (int) GameState->Ball.Width,
+		  (int) GameState->Ball.Height);
 }

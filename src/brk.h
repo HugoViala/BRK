@@ -43,6 +43,13 @@ struct game_point
     real32 Y;
 };
 
+struct game_ball
+{
+    game_point Pos;
+    real32 Width;
+    real32 Height;
+};
+
 struct game_paddle
 {
     game_point BottomLeftPos;
@@ -54,6 +61,7 @@ struct game_state
 {
     // TODO(hugo): Should I make this a pointer ?
     game_paddle Paddle;
+    game_ball Ball;
 
     int Width;
     int Height;

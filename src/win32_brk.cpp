@@ -59,13 +59,22 @@ int main(int argc, char** argv)
     game_state GameState = {};
     GameState.Width = WindowWidth;
     GameState.Height = WindowHeight;
+    
     game_paddle Paddle = {};
     Paddle.Width = 100;
     Paddle.Height = 25;
     Paddle.BottomLeftPos = {};
     Paddle.BottomLeftPos.X = 160;
     Paddle.BottomLeftPos.Y = 60;
+
+    game_ball Ball = {};
+    Ball.Pos.X = Paddle.BottomLeftPos.X + (Paddle.Width/2.0f);
+    Ball.Pos.Y = Paddle.BottomLeftPos.Y + Paddle.Height;
+    Ball.Width = 10;
+    Ball.Height = 10;
+    
     GameState.Paddle = Paddle;
+    GameState.Ball = Ball;
     
     
     LARGE_INTEGER LastFrameTime = Win32GetWallClock();
