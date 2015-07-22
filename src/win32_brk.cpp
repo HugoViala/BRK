@@ -3,7 +3,6 @@
 
 /*
   TODO(hugo):
-  - Cleaning up batch file
   - Creating Debug Precompile instructions
   - Smooth the collision detection (use float for positioning ?)
   - Add a ball to play around with
@@ -11,7 +10,7 @@
  */
 
 
-global_variable real32 GlobalPerfCountFrequency;
+global_variable LONGLONG GlobalPerfCountFrequency;
 
 
 inline LARGE_INTEGER
