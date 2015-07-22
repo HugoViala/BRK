@@ -3,7 +3,6 @@
 
 /*
   TODO(hugo):
-  - Creating Debug Precompile instructions
   - Smooth the collision detection (use float for positioning ?)
   - Add a ball to play around with
   - Support Gamepad
