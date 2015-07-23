@@ -35,26 +35,37 @@ struct game_input
 };
 
 
+
 // NOTE(hugo): This represent a point in the math
 // referentiel (bottom-left is (0,0))
-struct game_point
+struct vector2
 {
     real32 X;
     real32 Y;
 };
 
-struct game_ball
+struct game_rect
 {
-    game_point Pos;
+    vector2 Pos;
     real32 Width;
     real32 Height;
 };
 
+struct game_ball
+{
+    game_rect Rect;
+};
+
+/*struct game_color
+{
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+    };*/
+
 struct game_paddle
 {
-    game_point BottomLeftPos;
-    real32 Width;
-    real32 Height;
+    game_rect Rect;
 };
 
 struct game_state

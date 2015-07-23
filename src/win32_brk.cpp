@@ -61,17 +61,17 @@ int main(int argc, char** argv)
     GameState.Height = WindowHeight;
     
     game_paddle Paddle = {};
-    Paddle.Width = 100;
-    Paddle.Height = 25;
-    Paddle.BottomLeftPos = {};
-    Paddle.BottomLeftPos.X = 160;
-    Paddle.BottomLeftPos.Y = 60;
+    Paddle.Rect.Width = 100;
+    Paddle.Rect.Height = 25;
+    Paddle.Rect.Pos = {};
+    Paddle.Rect.Pos.X = 160;
+    Paddle.Rect.Pos.Y = 60;
 
     game_ball Ball = {};
-    Ball.Pos.X = Paddle.BottomLeftPos.X + (Paddle.Width/2.0f);
-    Ball.Pos.Y = Paddle.BottomLeftPos.Y + Paddle.Height;
-    Ball.Width = 10;
-    Ball.Height = 10;
+    Ball.Rect.Pos.X = Paddle.Rect.Pos.X + (Paddle.Rect.Width/2.0f);
+    Ball.Rect.Pos.Y = Paddle.Rect.Pos.Y + Paddle.Rect.Height;
+    Ball.Rect.Width = 10;
+    Ball.Rect.Height = 10;
     
     GameState.Paddle = Paddle;
     GameState.Ball = Ball;

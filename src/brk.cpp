@@ -1,11 +1,10 @@
 #include "brk.h"
 
-// TODO(hugo): Simplify this function taking my own
-// canonical rectangle
 // NOTE(hugo): This function draws a rectangle in
 // math canonical coordinates
 void
-DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h)
+DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h,
+	      Uint8 r, Uint8 g, Uint8 b)
 {
     // TODO(hugo): Should these be encoded somewhere else ?
     // IMPORTANT(hugo): I have starter to encode them in the GameState
@@ -20,11 +19,27 @@ DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h)
     DrawingRect.w = w;
     DrawingRect.h = h;
 
+    SDL_SetRenderDrawColor(Renderer, r, g, b, 255);
     SDL_RenderFillRect(Renderer, &DrawingRect);
+    SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
+
 }
 
+void
+DrawRectangle(SDL_Renderer *Renderer,
+	      game_rect *Rect, Uint8 r, Uint8 g, Uint8 b)
+{
+    DrawRectangle(Renderer,
+		  (int) Rect->Pos.X,
+		  (int) Rect->Pos.Y,
+		  (int) Rect->Width,
+		  (int) Rect->Height,
+		  r, g, b);
+}
+
+
 bool32
-IsWorldEmpty(game_state* GameState, game_point* Point)
+IsWorldEmpty(game_state* GameState, vector2* Point)
 {
     if(Point->X < 0 ||
        Point->X >= GameState->Width ||
@@ -44,7 +59,7 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 {
 
 
-    game_point dPaddle = {};
+    vector2 dPaddle = {};
     dPaddle.X = 0.0f;
     real32 PaddleSpeed = 5.0f;
     
@@ -58,36 +73,27 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     }
     dPaddle.X *= PaddleSpeed;
 
-    game_point NewPaddlePosBottomLeft = {};
-    NewPaddlePosBottomLeft.X = dPaddle.X + GameState->Paddle.BottomLeftPos.X;
-    NewPaddlePosBottomLeft.Y = GameState->Paddle.BottomLeftPos.Y;
+    vector2 NewPaddlePosBottomLeft = {};
+    NewPaddlePosBottomLeft.X = dPaddle.X + GameState->Paddle.Rect.Pos.X;
+    NewPaddlePosBottomLeft.Y = GameState->Paddle.Rect.Pos.Y;
 
-    game_point NewPaddlePosBottomRight = {};
-    NewPaddlePosBottomRight.X = dPaddle.X + GameState->Paddle.BottomLeftPos.X + GameState->Paddle.Width;
-    NewPaddlePosBottomRight.Y = GameState->Paddle.BottomLeftPos.Y;    
+    vector2 NewPaddlePosBottomRight = {};
+    NewPaddlePosBottomRight.X = dPaddle.X + GameState->Paddle.Rect.Pos.X + GameState->Paddle.Rect.Width;
+    NewPaddlePosBottomRight.Y = GameState->Paddle.Rect.Pos.Y;    
     
     if(IsWorldEmpty(GameState, &NewPaddlePosBottomLeft) &&
        IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
     {
-	GameState->Paddle.BottomLeftPos = NewPaddlePosBottomLeft;
-	GameState->Ball.Pos.X = GameState->Paddle.BottomLeftPos.X + (GameState->Paddle.Width/2.0f);
+	GameState->Paddle.Rect.Pos = NewPaddlePosBottomLeft;
+	GameState->Ball.Rect.Pos.X = GameState->Paddle.Rect.Pos.X + (GameState->Paddle.Rect.Width/2.0f);
     }
 
     // NOTE(hugo): Rendering
     SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
     SDL_RenderClear(Renderer);
-    SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
 
     // TODO(hugo): Simplify
-    DrawRectangle(Renderer,
-		  (int) GameState->Paddle.BottomLeftPos.X,
-		  (int) GameState->Paddle.BottomLeftPos.Y,
-		  (int) GameState->Paddle.Width,
-		  (int) GameState->Paddle.Height);
+    DrawRectangle(Renderer, &GameState->Paddle.Rect, 0, 255, 0);
 
-    DrawRectangle(Renderer,
-		  (int) GameState->Ball.Pos.X,
-		  (int) GameState->Ball.Pos.Y,
-		  (int) GameState->Ball.Width,
-		  (int) GameState->Ball.Height);
+    DrawRectangle(Renderer, &GameState->Ball.Rect, 255, 0, 0);
 }
