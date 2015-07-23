@@ -72,21 +72,20 @@ int main(int argc, char** argv)
     Ball.Rect.Pos.Y = Paddle.Rect.Pos.Y + Paddle.Rect.Height;
     Ball.Rect.Width = 10;
     Ball.Rect.Height = 10;
+    Ball.State = START_STATE;
     
     GameState.Paddle = Paddle;
     GameState.Ball = Ball;
     
+    game_input Input = {};
     
     LARGE_INTEGER LastFrameTime = Win32GetWallClock();
     while(Running)	
     {
-	// TODO(hugo): Should we create a game_input each frame ?
-	game_input Input = {};
 	Input.MoveLeft = false;
 	Input.MoveRight = false;
 	Input.ActionUp = false;
 
-	
 	SDL_Event Event;
 	const Uint8* KeyboardState = SDL_GetKeyboardState(0);
 	while(SDL_PollEvent(&Event))
@@ -105,6 +104,10 @@ int main(int argc, char** argv)
 	if(KeyboardState[SDL_SCANCODE_LEFT])
 	{
 	    Input.MoveLeft = true;
+	}
+	if(KeyboardState[SDL_SCANCODE_UP])
+	{
+	    Input.ActionUp = true;
 	}
 
 

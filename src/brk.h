@@ -26,6 +26,11 @@ typedef uint64_t uint64;
 typedef float real32;
 typedef double real64;
 
+enum ball_state
+{
+    START_STATE,
+    RUNNING_STATE
+};
 
 struct game_input
 {
@@ -33,7 +38,6 @@ struct game_input
     bool32 MoveRight;
     bool32 ActionUp;
 };
-
 
 
 // NOTE(hugo): This represent a point in the math
@@ -54,14 +58,8 @@ struct game_rect
 struct game_ball
 {
     game_rect Rect;
+    ball_state State;
 };
-
-/*struct game_color
-{
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    };*/
 
 struct game_paddle
 {

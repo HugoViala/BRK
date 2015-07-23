@@ -57,8 +57,6 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 		    game_input* Input,
 		    game_state* GameState)
 {
-
-
     vector2 dPaddle = {};
     dPaddle.X = 0.0f;
     real32 PaddleSpeed = 5.0f;
@@ -70,6 +68,10 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     if(Input->MoveRight)
     {
 	dPaddle.X = 1.0f;
+    }
+    if(Input->ActionUp && GameState->Ball.State == START_STATE)
+    {
+	GameState->Ball.State = RUNNING_STATE;
     }
     dPaddle.X *= PaddleSpeed;
 
@@ -85,15 +87,18 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
        IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
     {
 	GameState->Paddle.Rect.Pos = NewPaddlePosBottomLeft;
-	GameState->Ball.Rect.Pos.X = GameState->Paddle.Rect.Pos.X + (GameState->Paddle.Rect.Width/2.0f);
+	if(GameState->Ball.State == START_STATE)
+	    GameState->Ball.Rect.Pos.X = GameState->Paddle.Rect.Pos.X + (GameState->Paddle.Rect.Width/2.0f);
+    }
+    if(GameState->Ball.State == RUNNING_STATE)
+    {
+	GameState->Ball.Rect.Pos.Y++;
     }
 
     // NOTE(hugo): Rendering
     SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
     SDL_RenderClear(Renderer);
 
-    // TODO(hugo): Simplify
     DrawRectangle(Renderer, &GameState->Paddle.Rect, 0, 255, 0);
-
     DrawRectangle(Renderer, &GameState->Ball.Rect, 255, 0, 0);
 }
