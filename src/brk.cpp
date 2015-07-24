@@ -1,5 +1,16 @@
 #include "brk.h"
 
+
+
+vector2 operator+(vector2 A, vector2 B)
+{
+    vector2 Result = {};
+    Result.X = A.X + B.X;
+    Result.Y = A.Y + B.Y;
+    return(Result);
+}
+
+
 // NOTE(hugo): This function draws a rectangle in
 // math canonical coordinates
 void
@@ -59,7 +70,7 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 {
     vector2 dPaddle = {};
     dPaddle.X = 0.0f;
-    real32 PaddleSpeed = 5.0f;
+    real32 PaddleSpeedNorm = 5.0f;
     
     if(Input->MoveLeft)
     {
@@ -73,26 +84,37 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     {
 	GameState->Ball.State = RUNNING_STATE;
     }
-    dPaddle.X *= PaddleSpeed;
+    dPaddle.X *= PaddleSpeedNorm;
 
-    vector2 NewPaddlePosBottomLeft = {};
-    NewPaddlePosBottomLeft.X = dPaddle.X + GameState->Paddle.Rect.Pos.X;
-    NewPaddlePosBottomLeft.Y = GameState->Paddle.Rect.Pos.Y;
+    vector2 NewPos = {};
+    NewPos.X = dPaddle.X + GameState->Paddle.Rect.Pos.X;
+    NewPos.Y = GameState->Paddle.Rect.Pos.Y;
 
     vector2 NewPaddlePosBottomRight = {};
     NewPaddlePosBottomRight.X = dPaddle.X + GameState->Paddle.Rect.Pos.X + GameState->Paddle.Rect.Width;
     NewPaddlePosBottomRight.Y = GameState->Paddle.Rect.Pos.Y;    
+
     
-    if(IsWorldEmpty(GameState, &NewPaddlePosBottomLeft) &&
+    
+    if(IsWorldEmpty(GameState, &NewPos) &&
        IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
     {
-	GameState->Paddle.Rect.Pos = NewPaddlePosBottomLeft;
+	GameState->Paddle.Rect.Pos = NewPos;
 	if(GameState->Ball.State == START_STATE)
 	    GameState->Ball.Rect.Pos.X = GameState->Paddle.Rect.Pos.X + (GameState->Paddle.Rect.Width/2.0f);
     }
     if(GameState->Ball.State == RUNNING_STATE)
     {
-	GameState->Ball.Rect.Pos.Y++;
+	if(GameState->Ball.Speed.X == 0 &&
+	   GameState->Ball.Speed.Y == 0)
+	{
+	    GameState->Ball.Speed.X = 1.0f;
+	    GameState->Ball.Speed.Y = 1.0f;
+	}
+
+	GameState->Ball.Rect.Pos = GameState->Ball.Rect.Pos + GameState->Ball.Speed;
+
+	
     }
 
     // NOTE(hugo): Rendering

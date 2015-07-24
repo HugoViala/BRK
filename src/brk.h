@@ -48,9 +48,12 @@ struct vector2
     real32 Y;
 };
 
+vector2 operator+(vector2 A, vector2 B);
+
 struct game_rect
 {
     vector2 Pos;
+    vector2 Speed;
     real32 Width;
     real32 Height;
 };
@@ -58,7 +61,8 @@ struct game_rect
 struct game_ball
 {
     game_rect Rect;
-    ball_state State;
+    vector2 Speed;
+    ball_state State;    
 };
 
 struct game_paddle
