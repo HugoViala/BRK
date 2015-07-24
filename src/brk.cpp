@@ -1,6 +1,17 @@
 #include "brk.h"
 
-
+/*
+ * TODO(hugo)
+ *  - cleaning things up in different file
+ *  - my api is shit, with this Rect mess, do something about it (see the usage code)
+ *  - add blocks !!!
+ *  - loading BMP
+ *  - do art assets for the paddle and the ball
+ *  - improve paddle collision (smoother)
+ *  - debug collision case to see if it is pixel-right
+ *  - quit when the ball falls (easy)
+ *  - put the ball 
+ */
 
 vector2 operator+(vector2 A, vector2 B)
 {
