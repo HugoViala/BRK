@@ -68,8 +68,12 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 		    game_input* Input,
 		    game_state* GameState)
 {
+    game_ball *Ball = &GameState->Ball;
+    game_paddle *Paddle = &GameState->Paddle;
+    
     vector2 dPaddle = {};
     dPaddle.X = 0.0f;
+    dPaddle.Y = 0.0f;
     real32 PaddleSpeedNorm = 5.0f;
     
     if(Input->MoveLeft)
@@ -80,47 +84,82 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     {
 	dPaddle.X = 1.0f;
     }
-    if(Input->ActionUp && GameState->Ball.State == START_STATE)
+    if(Input->ActionUp && Ball->State == START_STATE)
     {
-	GameState->Ball.State = RUNNING_STATE;
+	Ball->State = RUNNING_STATE;
     }
     dPaddle.X *= PaddleSpeedNorm;
 
-    vector2 NewPos = {};
-    NewPos.X = dPaddle.X + GameState->Paddle.Rect.Pos.X;
-    NewPos.Y = GameState->Paddle.Rect.Pos.Y;
+    vector2 NewPos = dPaddle + Paddle->Rect.Pos;
+    //NewPos.X = dPaddle.X + Paddle.Rect.Pos.X;
+    //NewPos.Y = Paddle.Rect.Pos.Y;
 
     vector2 NewPaddlePosBottomRight = {};
-    NewPaddlePosBottomRight.X = dPaddle.X + GameState->Paddle.Rect.Pos.X + GameState->Paddle.Rect.Width;
-    NewPaddlePosBottomRight.Y = GameState->Paddle.Rect.Pos.Y;    
-
-    
+    NewPaddlePosBottomRight.X = dPaddle.X + Paddle->Rect.Pos.X + Paddle->Rect.Width;
+    NewPaddlePosBottomRight.Y = Paddle->Rect.Pos.Y;    
     
     if(IsWorldEmpty(GameState, &NewPos) &&
        IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
     {
-	GameState->Paddle.Rect.Pos = NewPos;
-	if(GameState->Ball.State == START_STATE)
-	    GameState->Ball.Rect.Pos.X = GameState->Paddle.Rect.Pos.X + (GameState->Paddle.Rect.Width/2.0f);
+	Paddle->Rect.Pos = NewPos;
+	if(Ball->State == START_STATE)
+	    Ball->Rect.Pos.X = Paddle->Rect.Pos.X + (Paddle->Rect.Width/2.0f);
     }
-    if(GameState->Ball.State == RUNNING_STATE)
+    if(Ball->State == RUNNING_STATE)
     {
-	if(GameState->Ball.Speed.X == 0 &&
-	   GameState->Ball.Speed.Y == 0)
+	// NOTE(hugo): if we just got into running state
+	if(Ball->Speed.X == 0 &&
+	   Ball->Speed.Y == 0)
 	{
-	    GameState->Ball.Speed.X = 1.0f;
-	    GameState->Ball.Speed.Y = 1.0f;
+	    Ball->Speed.X = 3.0f;
+	    Ball->Speed.Y = 3.0f;
 	}
 
-	GameState->Ball.Rect.Pos = GameState->Ball.Rect.Pos + GameState->Ball.Speed;
+	// TODO(hugo): collision check for the ball
+	vector2 BallPos = Ball->Rect.Pos;
+	vector2 NewBallPos = BallPos + Ball->Speed;
+	/*vector2 NewBallPosUpLeft;
+	NewBallPosUpLeft.X = NewBallPos.X;
+	NewBallPosUpLeft.Y = NewBallPos.Y + Ball->Rect.Height;
 
+	vector2 NewBallPosUpRight;
+	NewBallPosUpLeft.X = NewBallPos.X + Ball->Rect.Width;
+	NewBallPosUpLeft.Y = NewBallPos.Y + Ball->Rect.Height;
+
+	vector2 NewBallPosBotRight;
+	NewBallPosUpLeft.X = NewBallPos.X + Ball->Rect.Width;
+	NewBallPosUpLeft.Y = NewBallPos.Y;*/
+
+	if(NewBallPos.X <= 0 ||
+	   NewBallPos.X >= GameState->Width ||
+	   NewBallPos.X + Ball->Rect.Width <= 0 ||
+	   NewBallPos.X + Ball->Rect.Width >= GameState->Width)
+	{
+	    Ball->Speed.X = -Ball->Speed.X;
+	}
+
+
+	if(NewBallPos.Y >= GameState->Height ||
+	   NewBallPos.Y + Ball->Rect.Height >= GameState->Height)
+	{
+	    Ball->Speed.Y = -Ball->Speed.Y;
+	}
+
+	// NOTE(hugo): if the ball collides the paddle
+	if(NewBallPos.Y < Paddle->Rect.Pos.Y + Paddle->Rect.Height &&
+	   NewBallPos.X + Ball->Rect.Width >= Paddle->Rect.Pos.X &&
+	   NewBallPos.X <= Paddle->Rect.Pos.X + Paddle->Rect.Width)
+	{
+	    Ball->Speed.Y = -Ball->Speed.Y;
+	}
 	
+	
+	Ball->Rect.Pos = Ball->Rect.Pos + Ball->Speed;
     }
 
     // NOTE(hugo): Rendering
     SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
     SDL_RenderClear(Renderer);
-
-    DrawRectangle(Renderer, &GameState->Paddle.Rect, 0, 255, 0);
-    DrawRectangle(Renderer, &GameState->Ball.Rect, 255, 0, 0);
+    DrawRectangle(Renderer, &Paddle->Rect, 0, 255, 0);
+    DrawRectangle(Renderer, &Ball->Rect, 255, 0, 0);
 }

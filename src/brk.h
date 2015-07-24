@@ -26,12 +26,6 @@ typedef uint64_t uint64;
 typedef float real32;
 typedef double real64;
 
-enum ball_state
-{
-    START_STATE,
-    RUNNING_STATE
-};
-
 struct game_input
 {
     bool32 MoveLeft;
@@ -58,8 +52,15 @@ struct game_rect
     real32 Height;
 };
 
+enum ball_state
+{
+    START_STATE,
+    RUNNING_STATE
+};
+
 struct game_ball
 {
+    // IMPORTANT(hugo): Am I sure I want a Rect ?
     game_rect Rect;
     vector2 Speed;
     ball_state State;    
