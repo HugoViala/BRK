@@ -2,14 +2,11 @@
 
 /*
  * TODO(hugo)
- *  - cleaning things up in different file
  *  - add blocks !!!
  *  - loading BMP
  *  - do art assets for the paddle and the ball
  *  - improve paddle collision (smoother)
  *  - debug collision case to see if it is pixel-right
- *  - fix the bug when you collide the ball with the paddle on the side
- *  - put the ball 
  */
 
 
@@ -38,7 +35,7 @@ DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h,
 
 
 void
-DrawRectangle(SDL_Renderer* Renderer, vector2 P,
+DrawRectangle(SDL_Renderer* Renderer, v2 P,
 	      int w, int h, Uint8 r, Uint8 g, Uint8 b)
 {
     DrawRectangle(Renderer,
@@ -58,7 +55,7 @@ DrawRectangle(SDL_Renderer *Renderer,
 
 
 bool32
-IsWorldEmpty(game_state* GameState, vector2* Point)
+IsWorldEmpty(game_state* GameState, v2* Point)
 {
     if(Point->X < 0 ||
        Point->X >= GameState->Width ||
@@ -94,10 +91,10 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     }
     Paddle->dP.X *= Paddle->Speed;
 
-    vector2 NewP = Paddle->P + Paddle->dP;
+    v2 NewP = Paddle->P + Paddle->dP;
 
 
-    vector2 NewPaddlePBottomRight = {};
+    v2 NewPaddlePBottomRight = {};
     NewPaddlePBottomRight.X = Paddle->dP.X + Paddle->P.X + Paddle->Width;
     NewPaddlePBottomRight.Y = Paddle->P.Y;    
     
@@ -121,7 +118,7 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	    Ball->dP = {Ball->Speed, Ball->Speed};
 	}
 
-	vector2 NewBallP = Ball->P + Ball->dP;
+	v2 NewBallP = Ball->P + Ball->dP;
 
 	if(NewBallP.X <= 0 ||
 	   NewBallP.X >= GameState->Width ||

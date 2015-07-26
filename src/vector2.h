@@ -5,13 +5,13 @@
 
 // NOTE(hugo): This represent a point in the math
 // referentiel (bottom-left is (0,0))
-struct vector2
+struct v2
 {
     real32 X;
     real32 Y;
 };
 
-vector2 operator+(vector2 A, vector2 B);
+v2 operator+(v2 A, v2 B);
 
 
 #endif

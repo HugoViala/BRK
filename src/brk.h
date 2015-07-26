@@ -21,7 +21,7 @@ struct game_input
 
 struct game_rect
 {
-    vector2 Pos;
+    v2 Pos;
     real32 Width;
     real32 Height;
 };
@@ -34,8 +34,8 @@ enum ball_state
 
 struct game_ball
 {
-    vector2 P;
-    vector2 dP;
+    v2 P;
+    v2 dP;
     real32 Width;
     real32 Height;
     real32 Speed;
@@ -45,8 +45,8 @@ struct game_ball
 
 struct game_paddle
 {
-    vector2 P;
-    vector2 dP;
+    v2 P;
+    v2 dP;
     real32 Width;
     real32 Height;
     real32 Speed;
