@@ -136,6 +136,8 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	}
 
 	// NOTE(hugo): if the ball collides the paddle
+	// TODO(hugo): not perfect, we would need to check
+	// if the vector intersects the paddle top-line
 	if(NewBallP.Y < Paddle->P.Y + Paddle->Height &&
 	   NewBallP.Y >= Paddle->P.Y + 0.75f*Paddle->Height &&
 	   NewBallP.X + Ball->Width >= Paddle->P.X &&
@@ -146,6 +148,12 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	if(NewBallP.Y + Ball->Height <= 0)
 	{
 	    GameState->Running = false;
+	}
+
+	Ball->dP = (Ball->Speed / norm(Ball->dP)) * Ball->dP; 
+	if(Input->SpeedUp)
+	{
+	    Ball->dP = (2.0f * Ball->Speed / norm(Ball->dP)) * Ball->dP; 
 	}
 	
 	Ball->P = Ball->P + Ball->dP;
