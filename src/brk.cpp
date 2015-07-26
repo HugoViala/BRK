@@ -12,14 +12,6 @@
  *  - put the ball 
  */
 
-vector2 operator+(vector2 A, vector2 B)
-{
-    vector2 Result = {};
-    Result.X = A.X + B.X;
-    Result.Y = A.Y + B.Y;
-    return(Result);
-}
-
 
 // NOTE(hugo): This function draws a rectangle in
 // math canonical coordinates

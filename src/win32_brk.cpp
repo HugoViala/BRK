@@ -3,8 +3,6 @@
 
 /*
   TODO(hugo):
-  - Smooth the collision detection (use float for positioning ?)
-  - Add a ball to play around with
   - Support Gamepad
  */
 
@@ -88,7 +86,8 @@ int main(int argc, char** argv)
 	Input.MoveLeft = false;
 	Input.MoveRight = false;
 	Input.ActionUp = false;
-
+	Input.SpeedUp = false;
+	
 	SDL_Event Event;
 	const Uint8* KeyboardState = SDL_GetKeyboardState(0);
 	while(SDL_PollEvent(&Event))
@@ -111,6 +110,10 @@ int main(int argc, char** argv)
 	if(KeyboardState[SDL_SCANCODE_UP])
 	{
 	    Input.ActionUp = true;
+	}
+	if(KeyboardState[SDL_SCANCODE_SPACE])
+	{
+	    Input.SpeedUp = true;
 	}
 
 

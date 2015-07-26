@@ -6,5 +6,5 @@ set CommonLinkerFlag=C:\SDL2\lib\x64\SDL2.lib C:\SDL2\lib\x64\SDL2main.lib C:\SD
 
 IF NOT EXIST ..\build mkdir ..\build
 pushd ..\build
-cl %CommonCompilerFlags% %CommonIncludeFlags%  ..\src\win32_brk.cpp ..\src\brk.cpp %CommonLinkerFlag%  
+cl %CommonCompilerFlags% %CommonIncludeFlags%  ..\src\win32_brk.cpp ..\src\brk.cpp ..\src\vector2.cpp %CommonLinkerFlag%  
 popd

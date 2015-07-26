@@ -5,44 +5,19 @@
 // Maybe it would be possible to create our own "proxy" to fill
 // all the properties of the renderer that needs be implemented
 #include <SDL.h>
-
-
-#define internal static
-#define local_persist static
-#define global_variable static
-
-
-typedef int8_t int8;
-typedef int16_t int16;
-typedef int32_t int32;
-typedef int64_t int64;
-typedef int32 bool32;
-
-typedef uint8_t uint8;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-
-typedef float real32;
-typedef double real64;
+#include "brk_types.h"
+#include "vector2.h"
 
 struct game_input
 {
     bool32 MoveLeft;
     bool32 MoveRight;
     bool32 ActionUp;
+
+    // TODO(hugo): find a better name
+    bool32 SpeedUp;
 };
 
-
-// NOTE(hugo): This represent a point in the math
-// referentiel (bottom-left is (0,0))
-struct vector2
-{
-    real32 X;
-    real32 Y;
-};
-
-vector2 operator+(vector2 A, vector2 B);
 
 struct game_rect
 {
@@ -90,6 +65,8 @@ struct game_state
 };
 
 void
-GameUpdateAndRender(SDL_Renderer* Renderer, game_input* Input, game_state* GameState);
+GameUpdateAndRender(SDL_Renderer* Renderer,
+		    game_input* Input,
+		    game_state* GameState);
 
 #endif
