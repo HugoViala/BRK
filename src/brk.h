@@ -60,18 +60,21 @@ enum ball_state
 struct game_ball
 {
     vector2 P;
+    vector2 dP;
     real32 Width;
     real32 Height;
-    vector2 dP;
+    real32 Speed;
+    
     ball_state State;    
 };
 
 struct game_paddle
 {
     vector2 P;
+    vector2 dP;
     real32 Width;
     real32 Height;
-    vector2 dP;
+    real32 Speed;
 };
 
 struct game_state

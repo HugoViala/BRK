@@ -64,15 +64,18 @@ int main(int argc, char** argv)
     Paddle.Width = 100;
     Paddle.Height = 25;
     Paddle.P = {};
-    Paddle.P.X = 160;
-    Paddle.P.Y = 60;
+    Paddle.P = {160.0f, 60.f};
+    Paddle.dP = {0.0f, 0.0f};
+    Paddle.Speed = 5.0f;
 
     game_ball Ball = {};
     Ball.P.X = Paddle.P.X + (Paddle.Width/2.0f);
     Ball.P.Y = Paddle.P.Y + Paddle.Height;
-    Ball.Width = 10;
-    Ball.Height = 10;
+    Ball.Width = 10.0f;
+    Ball.Height = 10.0f;
     Ball.State = START_STATE;
+    Ball.dP = {0.0f, 0.0f};
+    Ball.Speed = 5.0f;
     
     GameState.Paddle = Paddle;
     GameState.Ball = Ball;

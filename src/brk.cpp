@@ -27,8 +27,6 @@ void
 DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h,
 	      Uint8 r, Uint8 g, Uint8 b)
 {
-    // TODO(hugo): Should these be encoded somewhere else ?
-    // IMPORTANT(hugo): I have starter to encode them in the GameState
     int WindowWidth;
     int WindowHeight;
     SDL_GetRendererOutputSize(Renderer,
@@ -89,31 +87,26 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     game_ball *Ball = &GameState->Ball;
     game_paddle *Paddle = &GameState->Paddle;
     
-    vector2 dPaddle = {};
-    dPaddle.X = 0.0f;
-    dPaddle.Y = 0.0f;
-    real32 PaddleSpeedNorm = 5.0f;
-    
+    Paddle->dP = {0.0f, 0.0f};
     if(Input->MoveLeft)
     {
-	dPaddle.X = -1.0f;
+	Paddle->dP = {-1.0f, 0.0f};
     }
     if(Input->MoveRight)
     {
-	dPaddle.X = 1.0f;
+	Paddle->dP = {1.0f, 0.0f};
     }
     if(Input->ActionUp && Ball->State == START_STATE)
     {
 	Ball->State = RUNNING_STATE;
     }
-    dPaddle.X *= PaddleSpeedNorm;
+    Paddle->dP.X *= Paddle->Speed;
 
-    vector2 NewP = dPaddle + Paddle->P;
-    //NewP.X = dPaddle.X + Paddle.Rect.P.X;
-    //NewP.Y = Paddle.Rect.P.Y;
+    vector2 NewP = Paddle->P + Paddle->dP;
+
 
     vector2 NewPaddlePBottomRight = {};
-    NewPaddlePBottomRight.X = dPaddle.X + Paddle->P.X + Paddle->Width;
+    NewPaddlePBottomRight.X = Paddle->dP.X + Paddle->P.X + Paddle->Width;
     NewPaddlePBottomRight.Y = Paddle->P.Y;    
     
     if(IsWorldEmpty(GameState, &NewP) &&
@@ -125,17 +118,18 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     }
     if(Ball->State == RUNNING_STATE)
     {
+	// TODO(hugo) : Look for collisions with blocks
+	// ==> need for something more complete
+	// WRITE THE USAGE CODE FIRST
+	
 	// NOTE(hugo): if we just got into running state
 	if(Ball->dP.X == 0 &&
 	   Ball->dP.Y == 0)
 	{
-	    Ball->dP.X = 3.0f;
-	    Ball->dP.Y = 3.0f;
+	    Ball->dP = {Ball->Speed, Ball->Speed};
 	}
 
-	// TODO(hugo): collision check for the ball
-	vector2 BallP = Ball->P;
-	vector2 NewBallP = BallP + Ball->dP;
+	vector2 NewBallP = Ball->P + Ball->dP;
 
 	if(NewBallP.X <= 0 ||
 	   NewBallP.X >= GameState->Width ||
@@ -154,6 +148,7 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 
 	// NOTE(hugo): if the ball collides the paddle
 	if(NewBallP.Y < Paddle->P.Y + Paddle->Height &&
+	   NewBallP.Y >= Paddle->P.Y + 0.75f*Paddle->Height &&
 	   NewBallP.X + Ball->Width >= Paddle->P.X &&
 	   NewBallP.X <= Paddle->P.X + Paddle->Width)
 	{
