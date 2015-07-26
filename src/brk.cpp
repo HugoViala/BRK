@@ -3,7 +3,6 @@
 /*
  * TODO(hugo)
  *  - cleaning things up in different file
- *  - my api is shit, with this Rect mess, do something about it (see the usage code)
  *  - add blocks !!!
  *  - loading BMP
  *  - do art assets for the paddle and the ball
@@ -47,6 +46,14 @@ DrawRectangle(SDL_Renderer *Renderer, int x, int y, int w, int h,
 
 }
 
+
+void
+DrawRectangle(SDL_Renderer* Renderer, vector2 P,
+	      int w, int h, Uint8 r, Uint8 g, Uint8 b)
+{
+    DrawRectangle(Renderer,
+		  (int) P.X, (int) P.Y, w, h, r, g, b);
+}
 void
 DrawRectangle(SDL_Renderer *Renderer,
 	      game_rect *Rect, Uint8 r, Uint8 g, Uint8 b)
@@ -101,68 +108,75 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
     }
     dPaddle.X *= PaddleSpeedNorm;
 
-    vector2 NewPos = dPaddle + Paddle->Rect.Pos;
-    //NewPos.X = dPaddle.X + Paddle.Rect.Pos.X;
-    //NewPos.Y = Paddle.Rect.Pos.Y;
+    vector2 NewP = dPaddle + Paddle->P;
+    //NewP.X = dPaddle.X + Paddle.Rect.P.X;
+    //NewP.Y = Paddle.Rect.P.Y;
 
-    vector2 NewPaddlePosBottomRight = {};
-    NewPaddlePosBottomRight.X = dPaddle.X + Paddle->Rect.Pos.X + Paddle->Rect.Width;
-    NewPaddlePosBottomRight.Y = Paddle->Rect.Pos.Y;    
+    vector2 NewPaddlePBottomRight = {};
+    NewPaddlePBottomRight.X = dPaddle.X + Paddle->P.X + Paddle->Width;
+    NewPaddlePBottomRight.Y = Paddle->P.Y;    
     
-    if(IsWorldEmpty(GameState, &NewPos) &&
-       IsWorldEmpty(GameState, &NewPaddlePosBottomRight))
+    if(IsWorldEmpty(GameState, &NewP) &&
+       IsWorldEmpty(GameState, &NewPaddlePBottomRight))
     {
-	Paddle->Rect.Pos = NewPos;
+	Paddle->P = NewP;
 	if(Ball->State == START_STATE)
-	    Ball->Rect.Pos.X = Paddle->Rect.Pos.X + (Paddle->Rect.Width/2.0f);
+	    Ball->P.X = Paddle->P.X + (Paddle->Width/2.0f);
     }
     if(Ball->State == RUNNING_STATE)
     {
 	// NOTE(hugo): if we just got into running state
-	if(Ball->Speed.X == 0 &&
-	   Ball->Speed.Y == 0)
+	if(Ball->dP.X == 0 &&
+	   Ball->dP.Y == 0)
 	{
-	    Ball->Speed.X = 3.0f;
-	    Ball->Speed.Y = 3.0f;
+	    Ball->dP.X = 3.0f;
+	    Ball->dP.Y = 3.0f;
 	}
 
 	// TODO(hugo): collision check for the ball
-	vector2 BallPos = Ball->Rect.Pos;
-	vector2 NewBallPos = BallPos + Ball->Speed;
+	vector2 BallP = Ball->P;
+	vector2 NewBallP = BallP + Ball->dP;
 
-	if(NewBallPos.X <= 0 ||
-	   NewBallPos.X >= GameState->Width ||
-	   NewBallPos.X + Ball->Rect.Width <= 0 ||
-	   NewBallPos.X + Ball->Rect.Width >= GameState->Width)
+	if(NewBallP.X <= 0 ||
+	   NewBallP.X >= GameState->Width ||
+	   NewBallP.X + Ball->Width <= 0 ||
+	   NewBallP.X + Ball->Width >= GameState->Width)
 	{
-	    Ball->Speed.X = -Ball->Speed.X;
+	    Ball->dP.X = -Ball->dP.X;
 	}
 
 
-	if(NewBallPos.Y >= GameState->Height ||
-	   NewBallPos.Y + Ball->Rect.Height >= GameState->Height)
+	if(NewBallP.Y >= GameState->Height ||
+	   NewBallP.Y + Ball->Height >= GameState->Height)
 	{
-	    Ball->Speed.Y = -Ball->Speed.Y;
+	    Ball->dP.Y = -Ball->dP.Y;
 	}
 
 	// NOTE(hugo): if the ball collides the paddle
-	if(NewBallPos.Y < Paddle->Rect.Pos.Y + Paddle->Rect.Height &&
-	   NewBallPos.X + Ball->Rect.Width >= Paddle->Rect.Pos.X &&
-	   NewBallPos.X <= Paddle->Rect.Pos.X + Paddle->Rect.Width)
+	if(NewBallP.Y < Paddle->P.Y + Paddle->Height &&
+	   NewBallP.X + Ball->Width >= Paddle->P.X &&
+	   NewBallP.X <= Paddle->P.X + Paddle->Width)
 	{
-	    Ball->Speed.Y = -Ball->Speed.Y;
+	    Ball->dP.Y = -Ball->dP.Y;
 	}
-	if(NewBallPos.Y + Ball->Rect.Height <= 0)
+	if(NewBallP.Y + Ball->Height <= 0)
 	{
 	    GameState->Running = false;
 	}
 	
-	Ball->Rect.Pos = Ball->Rect.Pos + Ball->Speed;
+	Ball->P = Ball->P + Ball->dP;
     }
 
     // NOTE(hugo): Rendering
     SDL_SetRenderDrawColor(Renderer, 128, 128, 128, 255);	    
     SDL_RenderClear(Renderer);
-    DrawRectangle(Renderer, &Paddle->Rect, 0, 255, 0);
-    DrawRectangle(Renderer, &Ball->Rect, 255, 0, 0);
+    DrawRectangle(Renderer,
+		  Paddle->P,
+		  (int) Paddle->Width,
+		  (int) Paddle->Height,
+		  0, 255, 0);
+    DrawRectangle(Renderer,
+		  Ball->P,
+		  (int) Ball->Width,
+		  (int) Ball->Height, 255, 0, 0);
 }

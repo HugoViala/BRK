@@ -47,7 +47,6 @@ vector2 operator+(vector2 A, vector2 B);
 struct game_rect
 {
     vector2 Pos;
-    vector2 Speed;
     real32 Width;
     real32 Height;
 };
@@ -60,15 +59,19 @@ enum ball_state
 
 struct game_ball
 {
-    // IMPORTANT(hugo): Am I sure I want a Rect ?
-    game_rect Rect;
-    vector2 Speed;
+    vector2 P;
+    real32 Width;
+    real32 Height;
+    vector2 dP;
     ball_state State;    
 };
 
 struct game_paddle
 {
-    game_rect Rect;
+    vector2 P;
+    real32 Width;
+    real32 Height;
+    vector2 dP;
 };
 
 struct game_state

@@ -61,17 +61,17 @@ int main(int argc, char** argv)
     GameState.Running = true;
     
     game_paddle Paddle = {};
-    Paddle.Rect.Width = 100;
-    Paddle.Rect.Height = 25;
-    Paddle.Rect.Pos = {};
-    Paddle.Rect.Pos.X = 160;
-    Paddle.Rect.Pos.Y = 60;
+    Paddle.Width = 100;
+    Paddle.Height = 25;
+    Paddle.P = {};
+    Paddle.P.X = 160;
+    Paddle.P.Y = 60;
 
     game_ball Ball = {};
-    Ball.Rect.Pos.X = Paddle.Rect.Pos.X + (Paddle.Rect.Width/2.0f);
-    Ball.Rect.Pos.Y = Paddle.Rect.Pos.Y + Paddle.Rect.Height;
-    Ball.Rect.Width = 10;
-    Ball.Rect.Height = 10;
+    Ball.P.X = Paddle.P.X + (Paddle.Width/2.0f);
+    Ball.P.Y = Paddle.P.Y + Paddle.Height;
+    Ball.Width = 10;
+    Ball.Height = 10;
     Ball.State = START_STATE;
     
     GameState.Paddle = Paddle;
