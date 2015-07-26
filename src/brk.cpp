@@ -9,7 +9,7 @@
  *  - do art assets for the paddle and the ball
  *  - improve paddle collision (smoother)
  *  - debug collision case to see if it is pixel-right
- *  - quit when the ball falls (easy)
+ *  - fix the bug when you collide the ball with the paddle on the side
  *  - put the ball 
  */
 
@@ -129,17 +129,6 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	// TODO(hugo): collision check for the ball
 	vector2 BallPos = Ball->Rect.Pos;
 	vector2 NewBallPos = BallPos + Ball->Speed;
-	/*vector2 NewBallPosUpLeft;
-	NewBallPosUpLeft.X = NewBallPos.X;
-	NewBallPosUpLeft.Y = NewBallPos.Y + Ball->Rect.Height;
-
-	vector2 NewBallPosUpRight;
-	NewBallPosUpLeft.X = NewBallPos.X + Ball->Rect.Width;
-	NewBallPosUpLeft.Y = NewBallPos.Y + Ball->Rect.Height;
-
-	vector2 NewBallPosBotRight;
-	NewBallPosUpLeft.X = NewBallPos.X + Ball->Rect.Width;
-	NewBallPosUpLeft.Y = NewBallPos.Y;*/
 
 	if(NewBallPos.X <= 0 ||
 	   NewBallPos.X >= GameState->Width ||
@@ -163,7 +152,10 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	{
 	    Ball->Speed.Y = -Ball->Speed.Y;
 	}
-	
+	if(NewBallPos.Y + Ball->Rect.Height <= 0)
+	{
+	    GameState->Running = false;
+	}
 	
 	Ball->Rect.Pos = Ball->Rect.Pos + Ball->Speed;
     }

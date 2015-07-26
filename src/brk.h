@@ -79,6 +79,8 @@ struct game_state
 
     int Width;
     int Height;
+
+    bool32 Running;
 };
 
 void

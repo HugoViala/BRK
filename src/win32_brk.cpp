@@ -55,10 +55,10 @@ int main(int argc, char** argv)
     SDL_Renderer* Renderer = SDL_CreateRenderer(Window, -1,
 						SDL_RENDERER_ACCELERATED);
 
-    bool Running = true;
     game_state GameState = {};
     GameState.Width = WindowWidth;
     GameState.Height = WindowHeight;
+    GameState.Running = true;
     
     game_paddle Paddle = {};
     Paddle.Rect.Width = 100;
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     game_input Input = {};
     
     LARGE_INTEGER LastFrameTime = Win32GetWallClock();
-    while(Running)	
+    while(GameState.Running)	
     {
 	Input.MoveLeft = false;
 	Input.MoveRight = false;
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 	{
 	    if(Event.type == SDL_QUIT)
 	    {
-		Running = false;
+		GameState.Running = false;
 	    }
 	}
 
