@@ -2,7 +2,7 @@
 
 /*
  * TODO(hugo)
- *  - add blocks !!! (usage code first)
+ *  - improve collision scheme, loooots of bugs
  *  - loading BMP
  *  - do art assets for the paddle and the ball
  *  - improve paddle collision (smoother)
@@ -13,7 +13,11 @@
 bool32
 Collision(game_ball* Ball, v2 NewBallP, game_block* Block)
 {
-    if(NewBallP.Y < Block->P.Y + Block->Height &&
+    // TODO(hugo): we could, for example,
+    // for a top-collision, check if, at least, dP.Y < 0
+    
+    if(Ball->dP.Y < 0 &&
+       NewBallP.Y < Block->P.Y + Block->Height &&
        NewBallP.Y >= Block->P.Y + 0.75f*Block->Height &&
        NewBallP.X + Ball->Width >= Block->P.X &&
        NewBallP.X <= Block->P.X + Block->Width)
@@ -23,7 +27,8 @@ Collision(game_ball* Ball, v2 NewBallP, game_block* Block)
 	return(true);
     }
     
-    else if(NewBallP.Y + Ball->Height > Block->P.Y &&
+    else if(Ball->dP.Y > 0 &&
+	    NewBallP.Y + Ball->Height > Block->P.Y &&
 	    NewBallP.Y + Ball->Height <= Block->P.Y + 0.25f*Block->Height &&
 	    NewBallP.X + Ball->Width >= Block->P.X &&
 	    NewBallP.X <= Block->P.X + Block->Width)
@@ -33,7 +38,8 @@ Collision(game_ball* Ball, v2 NewBallP, game_block* Block)
 	return(true);
     }
     
-    else if(NewBallP.X + Ball->Width > Block->P.X &&
+    else if(Ball->dP.X > 0 &&
+	    NewBallP.X + Ball->Width > Block->P.X &&
 	    NewBallP.X + Ball->Width <= Block->P.X + 0.25f*Block->Width &&
 	    NewBallP.Y + Ball->Height >= Block->P.Y &&
 	    NewBallP.Y <= Block->P.Y + Block->Height)
@@ -43,12 +49,13 @@ Collision(game_ball* Ball, v2 NewBallP, game_block* Block)
 	return(true);
     }
     
-    else if(NewBallP.X < Block->P.X + Block->Width &&
+    else if(Ball->dP.X < 0 &&
+	    NewBallP.X < Block->P.X + Block->Width &&
 	    NewBallP.X >= Block->P.X + 0.75f*Block->Width &&
 	    NewBallP.Y + Ball->Height >= Block->P.Y &&
 	    NewBallP.Y <= Block->P.Y + Block->Height)
     {
-	// NOTE(hugo): if collision comes from the righty
+	// NOTE(hugo): if collision comes from the right
 	Ball->dP.X = -Ball->dP.X;
 	return(true);
     }

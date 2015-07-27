@@ -74,15 +74,21 @@ int main(int argc, char** argv)
     Ball.dP = {0.0f, 0.0f};
     Ball.Speed = 5.0f;
 
-    game_block Block = {};
-    Block.P = {100.0f, 300.0f};
-    Block.Width = 100.0f;
-    Block.Height = 25.0f;
+    game_block Block1 = {};
+    Block1.P = {100.0f, 300.0f};
+    Block1.Width = 100.0f;
+    Block1.Height = 25.0f;
+
+    game_block Block2 = {};
+    Block2.P = {300.0f, 350.0f};
+    Block2.Width = 100.0f;
+    Block2.Height = 25.0f;
     
     GameState.Paddle = Paddle;
     GameState.Ball = Ball;
     GameState.Blocks = std::vector<game_block*>();
-    GameState.Blocks.push_back(&Block);
+    GameState.Blocks.push_back(&Block1);
+    GameState.Blocks.push_back(&Block2);
     
     game_input Input = {};
     
