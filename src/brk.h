@@ -7,6 +7,9 @@
 #include <SDL.h>
 #include "brk_types.h"
 #include "vector2.h"
+#include <vector>
+
+#define ArrayCount(Array) (sizeof((Array)))/(sizeof((Array)[0]))
 
 struct game_input
 {
@@ -52,12 +55,20 @@ struct game_paddle
     real32 Speed;
 };
 
+struct game_block
+{
+    v2 P;
+    real32 Width;
+    real32 Height;
+};
+
 struct game_state
 {
     // TODO(hugo): Should I make this a pointer ?
     game_paddle Paddle;
     game_ball Ball;
-
+    std::vector<game_block*> Blocks;
+    
     int Width;
     int Height;
 

@@ -59,9 +59,8 @@ int main(int argc, char** argv)
     GameState.Running = true;
     
     game_paddle Paddle = {};
-    Paddle.Width = 100;
-    Paddle.Height = 25;
-    Paddle.P = {};
+    Paddle.Width = 100.0f;
+    Paddle.Height = 25.0f;
     Paddle.P = {160.0f, 60.f};
     Paddle.dP = {0.0f, 0.0f};
     Paddle.Speed = 5.0f;
@@ -74,9 +73,16 @@ int main(int argc, char** argv)
     Ball.State = START_STATE;
     Ball.dP = {0.0f, 0.0f};
     Ball.Speed = 5.0f;
+
+    game_block Block = {};
+    Block.P = {100.0f, 300.0f};
+    Block.Width = 100.0f;
+    Block.Height = 25.0f;
     
     GameState.Paddle = Paddle;
     GameState.Ball = Ball;
+    GameState.Blocks = std::vector<game_block*>();
+    GameState.Blocks.push_back(&Block);
     
     game_input Input = {};
     

@@ -4,6 +4,8 @@
 
 #include <windows.h>
 #include <SDL.h>
+#include <vector>
+
 
 #undef main
 

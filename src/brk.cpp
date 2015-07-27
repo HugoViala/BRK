@@ -2,13 +2,66 @@
 
 /*
  * TODO(hugo)
- *  - add blocks !!!
+ *  - add blocks !!! (usage code first)
  *  - loading BMP
  *  - do art assets for the paddle and the ball
  *  - improve paddle collision (smoother)
  *  - debug collision case to see if it is pixel-right
  */
 
+
+bool32
+Collision(game_ball* Ball, v2 NewBallP, game_block* Block)
+{
+    if(NewBallP.Y < Block->P.Y + Block->Height &&
+       NewBallP.Y >= Block->P.Y + 0.75f*Block->Height &&
+       NewBallP.X + Ball->Width >= Block->P.X &&
+       NewBallP.X <= Block->P.X + Block->Width)
+    {
+	// NOTE(hugo): if collision comes from the top
+	Ball->dP.Y = -Ball->dP.Y;
+	return(true);
+    }
+    
+    else if(NewBallP.Y + Ball->Height > Block->P.Y &&
+	    NewBallP.Y + Ball->Height <= Block->P.Y + 0.25f*Block->Height &&
+	    NewBallP.X + Ball->Width >= Block->P.X &&
+	    NewBallP.X <= Block->P.X + Block->Width)
+    {
+	// NOTE(hugo): if collision comes from the bottom
+	Ball->dP.Y = -Ball->dP.Y;
+	return(true);
+    }
+    
+    else if(NewBallP.X + Ball->Width > Block->P.X &&
+	    NewBallP.X + Ball->Width <= Block->P.X + 0.25f*Block->Width &&
+	    NewBallP.Y + Ball->Height >= Block->P.Y &&
+	    NewBallP.Y <= Block->P.Y + Block->Height)
+    {
+	// NOTE(hugo): if collision comes from the left
+	Ball->dP.X = -Ball->dP.X;
+	return(true);
+    }
+    
+    else if(NewBallP.X < Block->P.X + Block->Width &&
+	    NewBallP.X >= Block->P.X + 0.75f*Block->Width &&
+	    NewBallP.Y + Ball->Height >= Block->P.Y &&
+	    NewBallP.Y <= Block->P.Y + Block->Height)
+    {
+	// NOTE(hugo): if collision comes from the righty
+	Ball->dP.X = -Ball->dP.X;
+	return(true);
+    }
+
+    return(false);
+}
+
+void
+DeleteBlock(std::vector<game_block*> *Blocks, int BlockIndex)
+{
+    // TODO(hugo)
+    Blocks->erase(Blocks->begin() + BlockIndex);
+}
 
 // NOTE(hugo): This function draws a rectangle in
 // math canonical coordinates
@@ -75,8 +128,12 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 {
     game_ball *Ball = &GameState->Ball;
     game_paddle *Paddle = &GameState->Paddle;
+    std::vector<game_block*> Blocks = GameState->Blocks;
+
     
     Paddle->dP = {0.0f, 0.0f};
+
+    // NOTE(hugo): Input processing
     if(Input->MoveLeft)
     {
 	Paddle->dP = {-1.0f, 0.0f};
@@ -150,6 +207,17 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 	    GameState->Running = false;
 	}
 
+	// NOTE(hugo): checking the collision between ball and blocks
+	for(int BlockIndex = 0;
+	    BlockIndex < Blocks.size();
+	    ++BlockIndex)
+	{
+	    if(Collision(Ball, NewBallP, Blocks[BlockIndex]))
+	    {
+		DeleteBlock(&GameState->Blocks, BlockIndex);
+	    }
+	}
+	
 	Ball->dP = (Ball->Speed / norm(Ball->dP)) * Ball->dP; 
 	if(Input->SpeedUp)
 	{
@@ -171,4 +239,14 @@ GameUpdateAndRender(SDL_Renderer* Renderer,
 		  Ball->P,
 		  (int) Ball->Width,
 		  (int) Ball->Height, 255, 0, 0);
+    for(int BlockIndex = 0;
+	BlockIndex < Blocks.size();
+	++BlockIndex)
+    {
+	DrawRectangle(Renderer,
+		      Blocks[BlockIndex]->P,
+		      (int) Blocks[BlockIndex]->Width,
+		      (int) Blocks[BlockIndex]->Height,
+		      0, 0, 255);
+    }
 }

@@ -1,6 +1,6 @@
 @echo off
 
-set CommonCompilerFlags=-MTd -nologo -Gm- -GR- -EHa- -Od -Oi -WX -W4 -wd4201 -wd4100 -wd4189 -wd4505 -wd4172 -FC -Zi
+set CommonCompilerFlags=-MTd -nologo -Gm- -GR- -EHa- -EHsc -Od -Oi -WX -W4 -wd4201 -wd4100 -wd4189 -wd4505 -wd4172 -FC -Zi
 set CommonIncludeFlags=-I C:\SDL2\include\
 set CommonLinkerFlag=C:\SDL2\lib\x64\SDL2.lib C:\SDL2\lib\x64\SDL2main.lib C:\SDL2\lib\x64\SDL2test.lib Winmm.lib
 
